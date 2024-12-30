@@ -52,13 +52,13 @@ uint8_t *qoiDecodeFile(const char *fname, qoi_desc_t *desc) {
 
     file = fopen(fname, "r");
     if (file == NULL) {
-        puts("failed to open file");
+        ERR("failed to open file");
         return NULL;
     }
 
     bool b = qoiReadHeader(file, desc);
     if (!b) {
-        puts("failed to read header");
+        ERR("failed to read header");
         fclose(file);
         return NULL;
     }
@@ -179,7 +179,7 @@ qoi_pixel_t bytesToQOIPixel(const uint8_t *data, uint64_t i, uint8_t channels) {
 bool qoiEncodeFile(const char *fname, const qoi_desc_t desc, const uint8_t *pixels) {
     FILE *file = fopen(fname, "w");
     if (file == NULL) {
-        puts("failed to open file");
+        ERR("failed to open file");
         return false;
     }
 
@@ -344,46 +344,3 @@ skipfinalrunwrite:
 
     return true;
 }
-
-/*int main(int argc, char **argv) {
-    qoi_desc_t desc;
-    uint8_t *pixels = qoiDecodeFile("baboon.qoi", &desc);
-    printf("desc: %d %d %d %d\n", desc.height, desc.width, desc.channels, desc.colorspace);
-    printf("pixel: %p\n", pixels);
-
-    bool f = qoiEncodeFile("new.qoi", desc, pixels);
-    printf("not failed: %d\n", f);
-
-    if(argc != 2) {
-        return 0;
-    }
-
-    uint64_t pixlen = PX * 4;//desc.width*desc.height*desc.channels;
-    for  (uint64_t pixi = 0; pixi < pixlen; pixi+=desc.channels) {
-        if ((pixi/desc.channels) % desc.width == 0) {
-            putchar('\n');
-        }
-        printf("\033[48;2;%d;%d;%dm%ld\033[0m", pixels[pixi], pixels[pixi + 1], pixels[pixi + 2], (pixi/desc.channels)%10);
-    }
-
-    putchar('\n');
-
-    free(pixels);
-    printf("hello\n");
-    pixels = qoiDecodeFile("new.qoi", &desc);
-    printf("hello %p", pixels);
-
-    pixlen = PX * 4;//desc.width*desc.height*desc.channels;
-    for  (uint64_t pixi = 0; pixi < pixlen; pixi+=desc.channels) {
-        if ((pixi/desc.channels) % desc.width == 0) {
-            putchar('\n');
-        }
-        printf("\033[48;2;%d;%d;%dm%ld\033[0m", pixels[pixi], pixels[pixi + 1], pixels[pixi + 2], (pixi/desc.channels)%10);
-    }
-
-    putchar('\n');
-    
-    free(pixels);
-
-    return 0;
-}*/
